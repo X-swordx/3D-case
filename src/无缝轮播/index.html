@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      .banner {
+        position: relative;
+        overflow: hidden;
+        width: 538px;
+        height: 405px;
+        margin: 100px auto 0;
+        border: 3px solid blue;
+      }
+
+      .banner ul {
+        position: absolute;
+        list-style-type: none;
+        width: 1000%;
+      }
+
+      /* .banner ul:after {
+        content: "";
+        display: block;
+        clear: both;
+      } */
+
+      .banner ul li {
+        float: left;
+      }
+
+      .banner ul li img {
+        display: block;
+      }
+
+      .banner .btnlist {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 20px;
+        width: 36%;
+        margin: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .banner .btnlist span {
+        float: left;
+        width: 20px;
+        height: 20px;
+        margin: 0 6px;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        font-size: 0;
+        cursor: pointer;
+      }
+
+      .banner .btnlist span.on {
+        position: absolute;
+        left: 0;
+        background-color: #ff0036;
+      }
+
+      .banner .btn span {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 50px;
+        height: 70px;
+        margin: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        text-align: center;
+        line-height: 70px;
+        font-size: 30px;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      .banner .btn .next {
+        right: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="banner">
+      <ul class="imglist">
+        <li><img src="images/6.jpg" alt="" /></li>
+        <li><img src="images/1.jpg" alt="" /></li>
+        <li><img src="images/2.jpg" alt="" /></li>
+        <li><img src="images/3.jpg" alt="" /></li>
+        <li><img src="images/4.jpg" alt="" /></li>
+        <li><img src="images/5.jpg" alt="" /></li>
+        <li><img src="images/6.jpg" alt="" /></li>
+        <li><img src="images/1.jpg" alt="" /></li>
+      </ul>
+
+      <div class="btnlist">
+        <span class="on"></span>
+        <span>0</span>
+        <span>1</span>
+        <span>2</span>
+        <span>3</span>
+        <span>4</span>
+        <span>5</span>
+      </div>
+
+      <div class="btn">
+        <span class="pre">&lt; </span>
+        <span class="next">&gt;</span>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="animation.js"></script>
+    <script>
+      // 获取元素
+      var oBan = document.getElementsByClassName("banner")[0];
+      var oUl = document.getElementsByClassName("imglist")[0];
+      var aBtn = document.querySelectorAll(".btn span");
+      var oBtnList = document.getElementsByClassName("btnlist")[0];
+      var aSpan = document.querySelectorAll(".btnlist span:not(.on)");
+      var oSpanOn = document.getElementsByClassName("on")[0];
+      var len = aSpan.length;
+      var index = 0;
+      var w = 538;
+
+      oUl.style.left = -w + "px"; //先把图片移动到第一张
+      //优化版本
+      for (var i = 0; i < 2; i++) {
+        aBtn[i].index = i; //0表示上一页 1表示下一页
+        aBtn[i].onclick = function() {
+          if (this.index) {
+            index++;
+          } else {
+            index--;
+          }
+          animation(oUl, { left: -w * (index + 1) }, 0.5, function() {
+            //如果没有到达边缘，就不动；如果到达边缘，就跳转到边缘的另一边
+            this.style.left = -w * (index + 1) + "px";
+          });
+          if (index <= -1) {
+            animation(
+              oSpanOn,
+              { left: 32 * index, opacity: 0 },
+              0.25,
+              function() {
+                index = len - 1;
+                this.style.left = 32 * len + "px";
+                animation(oSpanOn, { left: 32 * index, opacity: 1 }, 0.25);
+              }
+            );
+          } else if (index >= len) {
+            animation(
+              oSpanOn,
+              { left: 32 * index, opacity: 0 },
+              0.25,
+              function() {
+                index = 0;
+                this.style.left = 32 * (index - 1) + "px";
+                animation(oSpanOn, { left: 32 * index, opacity: 1 }, 0.25);
+              }
+            );
+          } else {
+            animation(oSpanOn, { left: 32 * index }, 0.5);
+          }
+        };
+      }
+      //圆点按钮点击移动图片
+      oBtnList.addEventListener(
+        "click",
+        function(e) {
+          e = e || window.event;
+          if (e.target.nodeName == "SPAN") {
+            index = e.target.innerHTML;
+            animation(oSpanOn, { left: index * 32 }, 0.5);
+            animation(oUl, { left: -w * (+index + 1) }, 0.5);
+          }
+        },
+        false
+      );
+    </script>
+  </body>
+</html>

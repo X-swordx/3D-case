@@ -1,0 +1,133 @@
+@charset 'utf-8';
+
+/* rightsidebar start */
+#rightsidebar{
+	top:0;
+	bottom:0;
+	right:0;
+	width:54px;
+	height:270px;
+	margin:auto;
+}
+#rightsidebar ul{
+	width:54px;
+	height:270px;
+}
+#rightsidebar ul li{
+	right:0;                    /* 相对定位来触发hover上去就移动li */
+	width:128px;
+	height:54px;
+	background-color:#31353d;
+	font-family: "Open Sans",Helvetica,Arial,Verdana,sans-serif;
+	transition:.5s;
+}
+#rightsidebar ul li:hover{
+	background-color:#3ea3ff;
+}
+#rightsidebar ul li.talk{
+	background-color:#3ea3ff;
+}
+#rightsidebar ul li.talk:hover,
+#rightsidebar ul li.note:hover{
+	right:74px;
+}
+#rightsidebar ul li.phone{
+	width:154px;
+}
+#rightsidebar ul li.phone:hover{
+	right:100px;
+}
+#rightsidebar ul li.wechat{
+	width:54px;
+	overflow:hidden;
+}
+#rightsidebar ul li.wechat:hover{
+	overflow:visible;
+}
+#rightsidebar ul li.wechat .erweima{
+	top:0;
+	bottom:0;
+	right:62px;
+	width:180px;
+	height:200px;
+	margin:auto;
+	background-image:linear-gradient(rgb(30,30,30) 0%,rgb(30,30,30) 50%,rgb(13,13,13) 50%,rgb(13,13,13) 100%);
+	text-align:center;
+	border-radius:15px;
+	opacity:0;
+	transition:1s;
+}
+#rightsidebar ul li.wechat:hover .erweima{
+	right:82px;
+	opacity:1;
+}
+#rightsidebar ul li.wechat .erweima:after{
+	content:'';
+	position:absolute;
+	top:0;
+	bottom:0;
+	right:-5px;
+	width:0;
+	height:0;
+	margin:auto;
+	border-width:5px;
+	border-style:solid;
+	border-color:transparent transparent transparent #1e1e1e;
+	border-right:none;
+}
+#rightsidebar ul li.wechat .erweima img{
+	margin-top:10px;
+}
+#rightsidebar ul li.wechat .erweima span{
+	display:inline-block;
+	margin-top:-10px;
+	line-height:20px;
+	font-size:14px;
+}
+#rightsidebar ul li.qq{
+	width:120px;
+}
+#rightsidebar ul li.qq:hover{
+	right:66px;
+}
+#rightsidebar ul li a{
+	display:block;
+	line-height:54px;           /* 垂直三要素 */
+	font-size:0;				/* 垂直三要素 */
+}
+#rightsidebar ul li a i{
+	display:inline-block;
+	width:30px;
+	height:30px;
+	margin:12px;
+	vertical-align:middle;      /* 垂直三要素 */
+}
+#rightsidebar ul li a span{
+	color:#fff;
+	font-size:16px;
+	vertical-align:middle;      /* 垂直三要素 */
+}
+#rightsidebar ul li.talk i{
+	background-image:url('../images/talk.png');
+	background-repeat:no-repeat;
+	background-position:0 4px;
+}
+#rightsidebar ul li i{
+	background-image:url('../images/pic.png');
+	background-repeat:no-repeat;
+}
+#rightsidebar ul li.phone i{
+	background-position:-40px 0;
+}
+#rightsidebar ul li.note i{
+	background-position:-40px -184px;
+}
+#rightsidebar ul li.wechat i{
+	background-position:-40px -78px;
+	cursor:default;
+}
+#rightsidebar ul li.qq i{
+	background-position:-40px -40px;
+}
+
+/* right-nav-bar end */

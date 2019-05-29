@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      overflow: hidden;
+      background: url('images/bg.jpg');
+      background-size: cover;
+    }
+
+    .ballon {
+      position: absolute;
+      /* left: 0px;
+      top: 0px; */
+      width: 81px;
+      height: 119px;
+      background: url('./images/ballon.png') no-repeat;
+      /* background-position: -81px -119px; */
+      cursor: pointer;
+    }
+
+    h1,
+    h2 {
+      color: #fff;
+      font-size: 50px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 id='defen'>0</h1>
+  <h2 id="time">20</h2>
+  <!-- <div class="ballon"></div> -->
+
+  <audio src="images/c.wav" id='yinyue'></audio>
+  <audio src="images/bgm.mp3" autoplay id='bgm'></audio>
+
+
+  <script>
+    // 获取元素
+    var oDefen = document.getElementById('defen');
+    var oTime = document.getElementById('time');
+    var oYinyue = document.getElementById('yinyue');
+
+    // bgm.play();
+    // 信号
+    var defen = 0;
+    var time = 20;
+
+    // 创建构造函数
+    function Ballon() {
+      this.top = 600;
+      this.left = Math.random() * 1200;
+      this.score = parseInt(Math.random() * 8) + 1;
+
+      this.init();
+      this.fly();
+    }
+
+    // 初始化
+    Ballon.prototype.init = function () {
+      // 创建DOM元素,并且给这个DOM元素添加属性
+      this.dom = document.createElement('div');
+      // 添加类名
+      this.dom.className = 'ballon';
+      // 节点添加到网页中去
+      document.body.appendChild(this.dom);
+
+      // 设置样式,确定位置
+      this.dom.style.top = this.top + 'px';
+      this.dom.style.left = this.left + 'px';
+
+      // 设置背景图片,显示不同的气球,根据分数来设置
+      var x = -(this.score - 1) % 4 * 96;
+      var y = -parseInt((this.score - 1) / 4) * 120;
+      this.dom.style.backgroundPosition = x + 'px ' + y + 'px';
+
+      // 存this 
+      var This = this;
+
+      // 绑定点击事件
+      this.dom.onclick = function () {
+        // 爆炸
+        This.bomb();
+
+        // 爆炸时候响起音乐
+        oYinyue.load();
+        oYinyue.play();
+
+
+        // 累加分数
+        defen += This.score;
+        oDefen.innerHTML = defen;
+
+
+      }
+    }
+
+
+    // 气球飞一会
+    Ballon.prototype.fly = function () {
+
+      // 存this
+      var This = this;//在定时器里面this指向window
+
+      // 开启定时器
+      this.timer = setInterval(function () {
+        This.top -= 2 * This.score;
+
+        // 如果top 小于 -100自爆
+        if (This.top < -100) {
+          This.bomb();
+        }
+
+        This.dom.style.top = This.top + "px";
+
+      }, 20)
+    }
+
+    //  爆炸
+    Ballon.prototype.bomb = function () {
+      // 爆炸前先关闭定时器
+      clearInterval(this.timer);
+      // 移除DOM元素
+      document.body.removeChild(this.dom)
+    }
+
+
+
+    var frameCount = 0;
+
+    // 定时器创建气球
+    var timer = setInterval(function () {
+      frameCount++;
+      if (frameCount % 2 == 0) {
+        time--;
+        oTime.innerHTML = time;
+      }
+
+      // 事件结束清除定时器
+      if (time == 0) {
+        clearInterval(timer);
+        alert('GAME OVER ! 你的分数是' + defen);
+      }
+
+      //生成气球
+      new Ballon();
+
+    }, 500)
+  </script>
+</body>
+
+</html>

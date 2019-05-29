@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <title></title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      text-align: center;
+    }
+
+    #wrap {
+      width: 330px;
+      height: 65px;
+      border: solid;
+      margin: 100px auto;
+    }
+
+    #wrap ul {
+      height: 65px;
+      overflow: hidden;
+    }
+
+    #wrap ul li {
+      list-style-type: none;
+      float: left;
+      width: 41px;
+      height: 125px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="wrap">
+    <ul>
+      <li class="on">
+        <img class="img" src="images/0.png" alt="" />
+        <img class="imgBot" src="images/0.png" alt="" />
+      </li>
+      <li class="on">
+        <img class="img" src="images/0.png" alt="" />
+        <img class="imgBot" src="images/0.png" alt="" />
+      </li>
+      <li>
+        <img src="images/d.png" alt="" />
+      </li>
+      <li class="on">
+        <img class="img" src="images/0.png" alt="" />
+        <img class="imgBot" src="images/0.png" alt="" />
+      </li>
+      <li class="on">
+        <img class="img" src="images/0.png" alt="" />
+        <img class="imgBot" src="images/0.png" alt="" />
+      </li>
+      <li>
+        <img src="images/d.png" alt="" />
+      </li>
+      <li class="on">
+        <img class="img" src="images/0.png" alt="" />
+        <img class="imgBot" src="images/0.png" alt="" />
+      </li>
+      <li class="on">
+        <img class="img" src="images/0.png" alt="" />
+        <img class="imgBot" src="images/0.png" alt="" />
+      </li>
+    </ul>
+  </div>
+  <script type="text/javascript" src="animation.js"></script>
+  <script>
+    // 获取DOM元素
+    var aImg = document.getElementsByClassName("img");
+    var aImgBot = document.getElementsByClassName("imgBot");
+    var aLi = document.getElementsByClassName("on");
+    //定时器
+    setInterval(function () {
+      //获取当前时间
+      var now = new Date();
+      //上面一行的时间字符串
+      var str = toTwo(now.getHours()) + toTwo(now.getMinutes()) +
+        toTwo(now.getSeconds());
+      //设置当前时间加一秒
+      now.setSeconds(now.getSeconds() + 1);
+      //下面一行的时间字符串
+      var str2 = toTwo(now.getHours()) +
+        toTwo(now.getMinutes()) +
+        toTwo(now.getSeconds());
+      //改变aImg的图片
+      for (var i = 0; i < str.length; i++) {
+        aImg[i].src = "images/" + str[i] + ".png";
+      }
+      //改变aImgBot的图片
+      for (var i = 0; i < str2.length; i++) {
+        aImgBot[i].src = "images/" + str2[i] + ".png";
+      }
+      //时间运动
+      for (var i = 0; i < aLi.length; i++) {
+        if (str[i] !== str2[i]) {
+          (function (i) {
+            animation(aLi[i], {
+              marginTop: -65
+            }, 0.5, function () {
+              //把li重新拉回来
+              this.style.marginTop = 0;
+              //把下面的时间赋值给上面的时间
+              aImg[i].src = "images/" + str2[i] + ".png";
+            })
+          })(i)
+        }
+      }
+
+
+    }, 1000)
+
+
+    function toTwo(num) {
+      return num < 10 ? "0" + num : num + "";
+    }
+  </script>
+</body>
+
+</html>

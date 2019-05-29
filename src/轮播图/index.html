@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      .banner {
+        position: relative;
+        width: 658px;
+        height: 411px;
+        margin: 100px auto 0;
+        border: 3px solid blue;
+      }
+
+      .banner ul {
+        list-style-type: none;
+        height: 100%;
+      }
+
+      .banner ul li {
+        /* display: none; */
+        position: absolute;
+        left: 0;
+        right: 0;
+        transition: 1.5s;
+        opacity: 0;
+      }
+
+      .banner ul li.on {
+        /* display: block; */
+        opacity: 1;
+      }
+
+      .banner .btn span {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 50px;
+        height: 70px;
+        margin: auto;
+        background-color: #fff;
+        font-size: 30px;
+        line-height: 70px;
+        text-align: center;
+        cursor: pointer;
+        opacity: 0.3;
+      }
+
+      .banner .btn span:hover {
+        opacity: 0.6;
+      }
+
+      .banner .btn span.next {
+        right: 0;
+      }
+
+      .banner .bottom {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 50px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        text-align: center;
+        font-size: 30px;
+        line-height: 50px;
+      }
+
+      .banner .check {
+        position: absolute;
+        bottom: -60px;
+        width: 100%;
+        text-align: center;
+      }
+
+      .banner .check span {
+        display: inline-block;
+        width: 90px;
+        height: 40px;
+        margin: 0 20px;
+        background-color: #000;
+        line-height: 40px;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      .banner .check span.on {
+        background-color: #f33;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="banner">
+      <ul class="imglist">
+        <li class="on"><img src="images/1.jpg" alt="" /></li>
+        <li><img src="images/2.jpg" alt="" /></li>
+        <li><img src="images/3.jpg" alt="" /></li>
+        <li><img src="images/4.jpg" alt="" /></li>
+        <li><img src="images/5.jpg" alt="" /></li>
+      </ul>
+
+      <div class="btn">
+        <span class="pre">&lt;</span>
+        <span class="next">&gt;</span>
+      </div>
+
+      <p class="bottom"><span class="text">1</span>/5</p>
+
+      <div class="check">
+        <span class="on">单边播放</span>
+        <span>循环播放</span>
+      </div>
+    </div>
+
+    <script>
+      var aLi = document.getElementsByTagName("li");
+      var aBtn = document.querySelectorAll(".btn span");
+      var oText = document.getElementsByClassName("text")[0];
+      var aCheck = document.querySelectorAll(".check span");
+      var index = 0;
+      var len = aLi.length;
+      var mark = true;
+      //单边循环按钮切换
+      /*     aCheck[0].onclick = function () {
+          mark = true;
+          for (var i = 0; i < 2; i++) {
+            aCheck[i].className = "";
+          }
+          this.className = "on";
+        }
+        aCheck[1].onclick = function () {
+          mark = false;
+          for (var i = 0; i < 2; i++) {
+            aCheck[i].className = "";
+          }
+          this.className = "on";
+        }
+
+        //点击上下页按钮
+        aBtn[0].onclick = function () {
+          aLi[index].className = "";
+          index--;
+          if (index < 0) {
+            if (mark) {
+              index = 0;
+            } else {
+              index = len - 1;
+            }
+          }
+          oText.innerHTML = index + 1;
+          aLi[index].className = "on";
+        }
+        aBtn[1].onclick = function () {
+          aLi[index].className = "";
+          index++;
+          if (index == len) {
+            if (mark) {
+              index = len - 1;
+            } else {
+              index = 0;
+            }
+          }
+          oText.innerHTML = index + 1;
+          aLi[index].className = "on";
+        } */
+
+      /*  优化代码 */
+      for (var i = 0; i < 2; i++) {
+        aCheck[i].index = i; //用对象的自定义属性储存i的值 0::单边 1:循环
+        aCheck[i].onclick = function() {
+          mark = this.index ? false : true;
+          for (var j = 0; j < 2; j++) {
+            aCheck[j].className = "";
+          }
+          this.className = "on";
+        };
+      }
+
+      for (var i = 0; i < 2; i++) {
+        aBtn[i].index = i; //用对象的自定义属性储存i的值 0:上一页 1:下一页
+        aBtn[i].onclick = function() {
+          clearInterval(timer);
+          change(this.index);
+        };
+      }
+
+      var timer = setInterval(function() {
+        mark = false;
+        change(1);
+      }, 3000);
+
+      function change(num) {
+        aLi[index].className = "";
+        if (num) {
+          index++;
+          if (index == len) {
+            index = mark ? len - 1 : 0;
+          }
+        } else {
+          index--;
+          if (index < 0) {
+            index = mark ? 0 : len - 1;
+          }
+        }
+        oText.innerHTML = index + 1;
+        aLi[index].className = "on";
+      }
+    </script>
+  </body>
+</html>

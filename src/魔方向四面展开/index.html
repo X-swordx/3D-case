@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Keywords" content="3D">
+  <meta name="Description" content="">
+  <title>3D</title>
+  <style>
+	*{
+		margin:0;
+		padding:0;
+	}
+	body{
+		perspective:600px;
+		background-color:#000;
+	}
+	.stage{
+		position:relative;
+		width:200px;
+		height:200px;
+		margin:400px auto 0;
+		transform-style:preserve-3d;
+		transition:6s;
+		animation:remove 5s linear infinite;
+	}
+	.stage .face{
+		position:absolute;
+		left:0;
+		top:0;
+		width:200px;
+		height:200px;
+		border:solid;
+		color:#00ffff;
+		background-repeat:no-repeat;
+		background-size:cover;
+		box-shadow:0 0 50px 0 #00ffff;
+		transition:2s;
+	}
+	.stage .front{
+		background-image:url(images/1.jpg);
+		transform:translateZ(100px);
+	}
+	.stage:hover .front{
+		transform:translateZ(200px);
+	}
+	.stage .behind{
+		background-image:url(images/2.jpg);
+		transform:rotateY(180deg) translateZ(100px);
+	}
+	.stage:hover .behind{
+		transform:rotateY(180deg) translateZ(200px);
+	}
+	.stage .left{
+		background-image:url(images/3.jpg);
+		transform:rotateY(90deg) translateZ(100px);
+	}
+	.stage:hover .left{
+		transform:rotateY(90deg) translateZ(200px);
+	}
+	.stage .right{
+		background-image:url(images/4.jpg);
+		transform:rotateY(-90deg) translateZ(100px);
+	}
+	.stage:hover .right{
+		transform:rotateY(-90deg) translateZ(200px);
+	}
+	.stage .top{
+		background-image:url(images/5.jpg);
+		transform:rotateX(90deg) translateZ(100px);
+	}
+	.stage:hover .top{
+		transform:rotateX(90deg) translateZ(200px);
+	}
+	.stage .bottom{
+		background-image:url(images/6.jpg);
+		transform:rotateX(-90deg) translateZ(100px);
+	}
+	.stage:hover .bottom{
+		transform:rotateX(-90deg) translateZ(200px);
+	}
+	.stage .box{
+		position:absolute;
+		left:50px;
+		top:50px;
+		width:100px;
+		height:100px;
+		transform-style:preserve-3d;
+		transition:2s;
+	}
+	.stage .box .pre{
+		position:absolute;
+		left:0;
+		top:0;
+		width:100px;
+		height:100px;
+		box-shadow:0 0 50px 0 #00ffff inset;
+		background-repeat:no-repeat;
+	}
+	.stage .box .front{
+		background-image:url(images/1.jpg);
+		background-size:cover;
+		transform:translateZ(50px);
+	}
+	.stage .box .behind{
+		background-image:url(images/2.jpg);
+		background-size:cover;
+		transform:rotateY(180deg) translateZ(50px);
+	}
+	.stage .box .left{
+		background-image:url(images/3.jpg);
+		background-size:cover;
+		transform:rotateY(90deg) translateZ(50px);
+	}
+	.stage .box .right{
+		background-image:url(images/4.jpg);
+		background-size:cover;
+		transform:rotateY(-90deg) translateZ(50px);
+	}
+	.stage .box .top{
+		background-image:url(images/5.jpg);
+		background-size:cover;
+		transform:rotateX(90deg) translateZ(50px);
+	}
+	.stage .box .bottom{
+		background-image:url(images/6.jpg);
+		background-size:cover;
+		transform:rotateX(-90deg) translateZ(50px);
+	}
+	@keyframes remove{
+		100%{
+			transform:rotateX(360deg) rotateY(360deg);
+		}
+	}
+  </style>
+ </head>
+ <body>
+	<div class = 'stage'>
+		<div class = 'face front'></div>
+		<div class = 'face behind'></div>
+		<div class = 'face left'></div>
+		<div class = 'face right'></div>
+		<div class = 'face top'></div>
+		<div class = 'face bottom'></div>
+		<div class = 'box'>
+			<div class = 'pre front'></div>
+			<div class = 'pre behind'></div>
+			<div class = 'pre left'></div>
+			<div class = 'pre right'></div>
+			<div class = 'pre top'></div>
+			<div class = 'pre bottom'></div>
+		</div>
+	</div>
+ </body>
+</html>

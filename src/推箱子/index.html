@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style type='text/css'>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    #btn {
+      width: 50%;
+      margin-top: 50px;
+      position: relative;
+      left: 50%;
+    }
+
+    #wrap {
+      margin: 0px auto;
+      background: url(img/block.gif);
+      position: relative;
+    }
+
+    #wrap div {
+      width: 35px;
+      height: 35px;
+      position: absolute;
+      /*float:left;*/
+      transition: .1s;
+    }
+
+    #wrap div img {
+      position: absolute;
+      bottom: 0;
+    }
+
+    #wrap div.ball img {
+      left: 50%;
+      bottom: 50%;
+      margin-left: -15px;
+      margin-bottom: -15px;
+    }
+
+    /*
+			#wrap div.wall{
+				z-index:3;
+			}
+			#wrap div.box{
+				z-index:1;
+			}
+			#wrap div.person{
+				z-index:2;
+			}
+			*/
+    #wrap div.person img {
+      left: 50%;
+      margin-left: -25px;
+    }
+  </style>
+
+
+</head>
+
+<body>
+
+  <div id="btn">
+
+    <input type="button" id="auto" value="哥！救我！" />
+    <input type="button" id="prev" value='上一步' />
+
+    <input type="button" id="nextLevel" value="下一关" />
+    <input type="button" id="prevLevel" value="上一关" />
+  </div>
+  <div id="wrap"></div>
+
+  <script>
+
+
+	//这样封装的好处是函数执行完之后作用域就被清除了，浏览器调用不到里面的东西
+    var game = (function () {
+
+      var Game = {
+        // 获取wrap元素
+        oWrap: document.getElementById('wrap'),
+
+        // 地图的宽高大小
+        size: { x: 16, y: 16 },
+
+        // 第几关
+        level: 0,
+
+        // 步骤次数统计
+        stepNum: 0,
+
+        // 步骤存储器
+        step: {
+          // 人物的步骤数据存储
+          person: [],
+
+          // 箱子的参数存储
+          box: []
+        },
+
+
+        // 关卡数据
+        mapData: [
+          // 第一关数据
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 0, 1, 1, 1, 3, 0, 3, 2, 1, 0, 0, 0, 0,
+            0, 0, 0, 0, 1, 2, 0, 3, 4, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 0, 1, 1, 1, 1, 3, 1, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          // 第二个数据
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 1, 4, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 1, 0, 3, 3, 1, 0, 1, 1, 1, 0, 0, 0,
+            0, 0, 0, 0, 1, 0, 3, 0, 1, 0, 1, 2, 1, 0, 0, 0,
+            0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 2, 1, 0, 0, 0,
+            0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 2, 1, 0, 0, 0,
+            0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0,
+            0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0,
+            0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          // 第三关
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+            0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 1, 0, 0, 0,
+            0, 0, 0, 0, 1, 1, 0, 0, 3, 2, 2, 2, 1, 0, 0, 0,
+            0, 0, 0, 0, 1, 0, 0, 3, 0, 1, 5, 2, 1, 0, 0, 0,
+            0, 0, 0, 1, 1, 0, 1, 1, 3, 1, 0, 1, 1, 0, 0, 0,
+            0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 3, 0, 1, 0, 0, 0,
+            0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0,
+            0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 4, 0, 1, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          //  第四关
+          [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 4, 1, 1, 0, 0, 0,
+            0, 0, 0, 0, 1, 2, 2, 2, 2, 1, 3, 0, 1, 1, 0, 0,
+            0, 0, 0, 0, 1, 2, 2, 2, 2, 1, 0, 3, 0, 1, 0, 0,
+            0, 0, 0, 0, 1, 2, 2, 2, 2, 0, 3, 0, 0, 1, 0, 0,
+            0, 0, 0, 0, 1, 0, 2, 2, 2, 1, 0, 0, 0, 1, 0, 0,
+            1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0,
+            1, 0, 3, 0, 3, 0, 0, 0, 3, 0, 0, 1, 0, 0, 1, 0,
+            1, 0, 0, 0, 0, 3, 3, 0, 0, 0, 3, 0, 3, 0, 1, 0,
+            1, 1, 1, 0, 3, 0, 3, 0, 3, 0, 0, 1, 1, 1, 1, 0,
+            0, 0, 1, 1, 0, 0, 0, 3, 0, 3, 0, 1, 0, 0, 0, 0,
+            0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          []
+        ],
+
+        //自动过关数据
+        auto: [
+          [40, 38, 37, 37, 39, 38, 38, 40, 39, 39],
+          []
+        ],
+
+
+
+
+        // 初始化
+        init: function () {
+
+          var This = Game;
+          This.oWrap.style.cssText = 'width:' + This.size.x * 35 + 'px;height:' + This.size.y * 35 + 'px;';
+
+          // 上一步
+          document.getElementById('prev').onclick = This.prev;
+
+          // 上一关 
+          document.getElementById('prevLevel').onclick = function () {
+            if (This.level > 0) {
+              This.level--;
+              This.createMap(This.level);
+            }
+          }
+
+          // 下一关
+          document.getElementById('nextLevel').onclick = function () {
+            if (This.level < This.mapData.length - 2) {
+              This.level++;
+            } else {
+              alert('你已经全通关了');
+              This.level = 0;
+            }
+            This.createMap(This.level);
+          }
+
+          // 自动播放
+          document.getElementById('auto').onclick = function () {
+            // 创建地图
+            This.createMap(This.level);
+
+            // 获取人物盒子
+            var oParent = This.getBox('person')[0]
+
+            // 获取人物图片
+            var oP = oParent.children[0];
+
+            // 定义计数
+            var kNum = 0;
+
+            // 开启定时器模拟按键
+            var timer = setInterval(function () {
+              var keyCode = This.auto[This.level][kNum];
+              This.controlFn(oP, oParent, keyCode);
+
+              kNum++;
+
+              // 判断清除定时器
+              if (kNum == This.auto[This.level].length) {
+                clearInterval(timer)
+              }
+            }, 500)
+
+
+          }
+
+          This.createMap(This.level);
+        },
+
+
+        // 创建地图
+        createMap: function (lv) {
+          //地图大小
+          var oPerson, oDiv, oImg;
+          this.oWrap.innerHTML = '';
+          // 初始化步骤信息
+          this.step.person = [];
+          this.step.box = [];
+          this.stepNum = 0;
+
+          //创建 16*16个小格子
+          for (var i = 0; i < this.size.x * this.size.y; i++) {
+            switch (this.mapData[lv][i]) {
+              case 1:
+                appDiv.call(this, i);
+                oImg.src = 'img/wall.png';
+                oDiv.className = 'wall';
+                break;
+              case 2:
+                appDiv.call(this, i);
+                oImg.src = 'img/ball.png';
+                oDiv.className = 'ball';
+                oDiv.style.zIndex = 0;
+                break;
+              case 3:
+                appDiv.call(this, i);
+                oImg.src = 'img/box.png';
+                oDiv.className = 'box';
+                break;
+              case 4:
+                appDiv.call(this, i);
+                oImg.src = 'img/down.png';
+                oDiv.className = 'person';
+                oPerson = oImg;
+                break;
+            }
+          }
+
+          // 调用控制人物函数
+          this.controlPerson(oPerson)
+
+          // 创建div 和img标签
+          function appDiv(i) {
+            var x = i % this.size.x;
+            var y = parseInt(i / this.size.x)
+            oDiv = document.createElement('div');
+            oDiv.x = x;
+            oDiv.y = y;
+            oDiv.style.cssText = 'left:' + x * 35 + 'px;top:' + y * 35 + 'px;z-index:' + (y * this.size.x) + ';';
+            oImg = new Image();
+            oDiv.appendChild(oImg);
+            this.oWrap.appendChild(oDiv);
+          }
+
+        },
+
+        // 控制人物
+        controlPerson: function (oP) {
+          var This = this;
+          var oParent = oP.parentNode;
+          document.onkeydown = function (ev) {
+            ev = ev || window.event;
+            var keyCode = ev.keyCode;
+            This.controlFn(oP, oParent, keyCode)
+
+          }
+        },
+
+        // 控制函数
+        controlFn: function (oP, oParent, keyCode) {
+
+          // 记录移动信息
+          // 在stepNum的每一步都在step中person和创建一个空对象
+          // 并且把图片的src信息保存在这个对象的src中
+          this.step.person[this.stepNum] = {}
+          this.step.person[this.stepNum].src = oP.src
+
+          switch (keyCode) {
+            // 左
+            case 37:
+              oP.src = 'img/left.png';
+              this.movePerson({ x: - 1 }, oParent)
+              break;
+            // 上
+            case 38:
+              oP.src = 'img/up.png';
+              this.movePerson({ y: -1 }, oParent)
+              break;
+            // 右
+            case 39:
+              oP.src = 'img/right.png';
+              this.movePerson({ x: 1 }, oParent)
+              break;
+            // 下
+            case 40:
+              oP.src = 'img/down.png';
+              this.movePerson({ y: 1 }, oParent)
+              break;
+          }
+
+        },
+
+        // 人物移动
+        movePerson: function (mJson, oParent) {
+          var x = mJson.x || 0;
+          var y = mJson.y || 0;
+
+          // 获取box的个数
+          var oBox = this.getBox('box', this.oWrap)
+
+          if (this.mapData[this.level][(oParent.x + x) + (oParent.y + y) * this.size.x] != 1) {
+            // 移动前记录前一个的位置信息
+            // 在step.person中记录人物移动前的位置信息
+            this.step.person[this.stepNum].x = oParent.x;
+            this.step.person[this.stepNum].y = oParent.y;
+
+            // oParent移动
+            oParent.x += x;
+            oParent.y += y;
+            oParent.style.left = oParent.x * 35 + 'px';
+            oParent.style.top = oParent.y * 35 + 'px';
+            oParent.style.zIndex = oParent.x + oParent.y * this.size.x;
+
+            // 步骤加一
+            this.stepNum++;
+
+            // 遍历所有的箱子
+            for (var i = 0; i < oBox.length; i++) {
+              // 判断箱子的位置是不是在人物的上一步
+              if (oBox[i].x == oParent.x && oBox[i].y == oParent.y) {
+                // 判断箱子上一步是不是墙壁
+                if (this.mapData[this.level][(oBox[i].x + x) + (oParent.y + y) * this.size.x] != 1) {
+
+                  //判断碰撞检测
+                  if (this.collision(oBox[i], x, y)) {
+                    // 移动箱子之前记录之前的位置
+                    // 箱子也是  每次移动都在step中创建一个对象 保存箱子移动前 及箱子的下标
+                    this.step.box[this.stepNum - 1] = {};
+                    this.step.box[this.stepNum - 1].index = i;
+                    this.step.box[this.stepNum - 1].x = oBox[i].x;
+                    this.step.box[this.stepNum - 1].y = oBox[i].y
+
+                    // 移动箱子
+                    oBox[i].x += x;
+                    oBox[i].y += y;
+                    oBox[i].style.left = oBox[i].x * 35 + 'px';
+                    oBox[i].style.top = oBox[i].y * 35 + 'px';
+                    oBox[i].style.zIndex = oBox[i].y * this.size.x;
+
+                    // 执行过关函数判断有没有过关
+                    this.pass();
+                  } else {
+
+                    oParent.x -= x;
+                    oParent.y -= y;
+                    oParent.style.left = oParent.x * 35 + 'px';
+                    oParent.style.top = oParent.y * 35 + 'px';
+                    oParent.style.zIndex = oParent.x + oParent.y * this.size.x;
+
+                    // 减少步骤移动
+                    this.stepNum--;
+                    this.step.person.pop();
+
+                  }
+
+
+                } else {
+                  // 如果箱子上一个是墙壁 就不让人物运动
+                  oParent.x -= x;
+                  oParent.y -= y;
+                  oParent.style.left = oParent.x * 35 + 'px';
+                  oParent.style.top = oParent.y * 35 + 'px';
+                  oParent.style.zIndex = oParent.x + oParent.y * this.size.x;
+
+                  // 减少步骤移动
+                  this.stepNum--;
+                  this.step.person.pop();
+
+                }
+              }
+            }
+
+          }
+        },
+
+        //箱子与箱子碰撞检测
+        collision: function (obj, x, y) {
+          // 获取所有的box
+          var oBox = this.getBox('box', this.oWrap);
+
+          // 遍历box
+          for (var i = 0; i < oBox.length; i++) {
+            if (oBox[i] != obj) {
+              if (oBox[i].x == obj.x + x && oBox[i].y == obj.y + y) {
+                return false;
+              }
+            }
+          }
+          return true;
+        },
+
+        // 获取box箱子的个数
+        getBox: function (cName, obj) {
+          obj = obj || document;
+          if (obj.getElementsByClassName) {
+            return obj.getElementsByClassName(cName);
+          } else {
+            var arr = [];
+            var allT = obj.getElementsByTagName('*');
+            for (var i = 0; i < allE.length; i++) {
+              var allTArr = allT[i].className.split(' ');
+              for (var j = 0; j < allTArr.length; i++) {
+                if (arrTArr[i] == cName) {
+                  arr.push(arrT[i]);
+                  break;
+                }
+              }
+            }
+            return arr;
+          }
+        },
+
+        // 过关检测
+        pass: function () {
+          var oBall = this.getBox('ball', this.oWrap);
+          var oBox = this.getBox('box', this.oWrap);
+          var passNum = 0;
+
+          // 遍历oBall
+          for (var i = 0; i < oBall.length; i++) {
+            // 遍历oBox
+            for (var j = 0; j < oBox.length; j++) {
+              // 判断 如果所有的oBall和oBox的位置就passName +1
+              if (oBall[i].x == oBox[j].x && oBall[i].y == oBox[i].y) {
+                passNum++;
+              }
+            }
+          }
+          if (passNum == oBall.length) {
+
+            if (this.level < this.mapData.length - 2) {
+              alert('你过关了')
+              this.level++;
+
+            } else {
+              alert('你已经全通关了');
+              this.level = 0;
+            }
+            this.createMap(this.level)
+          }
+
+        },
+
+        // 上一步函数
+        prev: function () {
+          var This = Game;
+          // 获取人物
+          var oPerson = This.getBox('person', This.oWrap)[0];
+          // 获取所有的box
+          var aBox = This.getBox('box', This.oWrap);
+          var oBoxNow;
+
+          // 判断步数是否为0
+          if (This.stepNum != 0) {
+
+            // 通过step.person获取人物上一步的位置
+            oPerson.x = This.step.person[This.stepNum - 1].x;
+            oPerson.y = This.step.person[This.stepNum - 1].y;
+
+            // 通过人物的位置,设置人物的回退
+            oPerson.style.left = oPerson.x * 35 + 'px';
+            oPerson.style.top = oPerson.y * 35 + 'px';
+            oPerson.style.zIndex = oPerson.x + oPerson.y * This.size.x;
+            oPerson.children[0].src = This.step.person[This.stepNum - 1].src;
+
+            // 判断盒子有没有移动,有没有上一步
+            if (This.step.box[This.stepNum - 1]) {
+              oBoxNow = aBox[This.step.box[This.stepNum - 1].index];
+              oBoxNow.x = This.step.box[This.stepNum - 1].x;
+              oBoxNow.y = This.step.box[This.stepNum - 1].y;
+
+              // 设置盒子会到移动的上一步
+              oBoxNow.style.left = oBoxNow.x * 35 + 'px';
+              oBoxNow.style.top = oBoxNow.y * 35 + 'px';
+              oBoxNow.style.zIndex = oBoxNow.y * This.size.x;
+            }
+            This.stepNum--;
+          }
+        }
+
+      }
+
+
+      // return 初始化接口
+      return Game.init;
+    })()
+
+    // game通过初始化接口执行对象
+    game();
+
+  </script>
+</body>
+
+</html>

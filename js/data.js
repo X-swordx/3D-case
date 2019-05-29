@@ -1,0 +1,89 @@
+/*
+ *存放案例数据
+ */
+
+var flyData = [{
+  type: 'JQ',
+  author: '不知',
+  title: '圆环相册',
+  dec: '案例',
+  time: "2019-05-24",
+  src: '3D Drag'
+}, {
+  type: 'H5',
+  author: '小轩',
+  title: '起飞页',
+  dec: '个人的第一个练习网站，全部由本人仿原网站写出来的',
+  time: "2019-05-25",
+  src: '起飞页'
+}, {
+  type: 'JS',
+  author: '小轩',
+  title: '渐变音频图',
+  dec: '滚动的音频旋律',
+  time: "2019-05-25",
+  src: '渐变音频图'
+}, {
+  type: 'JS',
+  author: '小轩',
+  title: "打气球",
+  dec: '点击气球爆炸游戏',
+  time: "2019-05-25",
+  src: '打气球'
+}, {
+  type: 'JS',
+  author: '小轩',
+  title: "轮播图",
+  dec: '',
+  time: "2019-05-25",
+  src: '轮播图'
+}, {
+  type: 'JS',
+  author: '小轩',
+  title: "随机色卡",
+  dec: '',
+  time: "2019-05-25",
+  src: '随机色卡'
+}, {
+  type: 'JS',
+  author: '小轩',
+  title: "图片时钟",
+  dec: '',
+  time: "2019-05-25",
+  src: '图片时钟'
+}, {
+  type: 'JS',
+  author: '小轩',
+  title: "推箱子",
+  dec: '',
+  time: "2019-05-25",
+  src: '推箱子'
+}, {
+  type: 'JS',
+  author: '小轩',
+  title: "拖拽缓冲",
+  dec: '',
+  time: "2019-05-25",
+  src: '拖拽+缓冲'
+}, {
+  type: 'JS',
+  author: '小轩',
+  title: "无缝轮播",
+  dec: '',
+  time: "2019-05-25",
+  src: '无缝轮播'
+}, {
+  type: 'CSS',
+  author: '小轩',
+  title: "3D旋转魔方",
+  dec: '',
+  time: "2019-05-25",
+  src: '3D魔方'
+}, {
+  type: 'CSS',
+  author: '小轩',
+  title: "魔方打开",
+  dec: '',
+  time: "2019-05-25",
+  src: '魔方向四面展开'
+}]

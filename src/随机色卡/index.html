@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset='UTF-8'>
+	<meta name='keywords' content=''>
+	<meta name='description' content=''>
+	<title></title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			text-align: center;
+		}
+
+		#box {
+			overflow: hidden;
+			border: solid;
+		}
+
+		#box span {
+			float: left;
+			width: 150px;
+			height: 60px;
+			line-height: 60px;
+			text-align: center;
+		}
+	</style>
+</head>
+
+<body>
+	<input type="button" id='btn1' value='run'>
+	<input type="button" id='btn2' value='stop'>
+
+	<div id="box">
+
+	</div>
+
+
+	<script type="text/javascript">
+		// 获取DOM元素
+		var btn1 = document.getElementById('btn1');
+		var btn2 = document.getElementById('btn2');
+		var oWrap = document.getElementById('box');
+		var timer = 0;
+
+
+		btn1.onclick = function () {
+
+			// 用表先关
+			clearInterval(timer);
+
+			// 开启定时器
+			timer = setInterval(function () {
+				// 创建一个节点
+				var span = document.createElement('span');
+
+				var r = Math.floor(Math.random() * 256);
+				var g = Math.floor(Math.random() * 256);
+				var b = Math.floor(Math.random() * 256);
+				var a = Math.random();
+
+				// 给节点添加背景颜色
+				span.style.backgroundColor = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')'
+
+
+				// 给节点添加内容
+				span.innerText = 'rgb(' + r + ',' + g + ',' + b + ')';
+
+				// 把节点添加到网页中去
+				oWrap.appendChild(span)
+
+			}, 1000)
+		}
+
+		// 停止定时器
+		btn2.onclick = function () {
+			clearInterval(timer);
+		}
+
+
+	</script>
+</body>
+
+</html>

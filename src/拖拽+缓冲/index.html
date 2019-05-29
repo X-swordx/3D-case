@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      user-select: none;
+      /* height: 20px; */
+    }
+
+    .content {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 320px;
+      height: 207px;
+      margin: auto;
+    }
+
+    .content ul {
+      list-style-type: none;
+    }
+
+    .content ul li {
+      position: absolute;
+    }
+
+    .content ul li img {
+      display: block;
+      width: 300px;
+      border: 10px solid #958a0d;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="content">
+    <ul>
+      <li><img src="images/1.jpg" alt=""></li>
+      <li><img src="images/2.jpg" alt=""></li>
+      <li><img src="images/3.jpg" alt=""></li>
+      <li><img src="images/4.jpg" alt=""></li>
+      <li><img src="images/5.jpg" alt=""></li>
+    </ul>
+  </div>
+  <script>
+    var oCon = document.getElementsByClassName("content")[0];
+    var aLi = oCon.getElementsByTagName("li");
+    var len = aLi.length;
+    var winW, winH, leftMax, topMax;
+    var index = 0;
+    var timer;
+
+    //盒子的宽高
+    var w = oCon.clientWidth;
+    var h = oCon.clientHeight;
+
+    //获取最大值和最小值
+    function ltMax() {
+      winW = window.innerWidth;
+      winH = window.innerHeight;
+      leftMax = (winW - w) / 2;
+      topMax = (winH - h) / 2;
+    }
+    ltMax();
+    //浏览器大小发生变化就执行事件
+    window.onresize = ltMax;
+
+    /*鼠标按下事件委托*/
+    document.addEventListener("mousedown", function (e) {
+      //设表先关
+      clearInterval(timer)
+      e = e || window.event;
+      //获取事件源元素对象 元素对象是图片
+      var target = e.target || e.srcElement;
+      //取消事件的默认行为
+      cancelHandle(e);
+      //获取事件源的元素对象的父级是li
+      var parent = target.parentNode;
+
+      if (parent.nodeName == "LI") {
+        var startX = e.clientX; //鼠标按下鼠标的X值
+        var startY = e.clientY; //鼠标按下鼠标的Y值
+        var startLeft = parent.offsetLeft; //li的相对left值
+        var startTop = parent.offsetTop; //li的相对top值
+
+        var nowX = 0,
+          nowY = 0;
+        var _x, _y; //x和y的差值
+        /*鼠标移动*/
+        document.onmousemove = function (e) {
+          e = e || window.event;
+          //获取最后两点的距离差,来实现缓冲
+          _x = e.clientX - nowX;
+          _y = e.clientY - nowY;
+          //鼠标拖动过程的X和Y值
+          nowX = e.clientX;
+          nowY = e.clientY;
+          //现在li的left和top值
+          var nowLeft = nowX - startX + startLeft;
+          var nowTop = nowY - startY + startTop;
+          //浏览器边缘判断
+          nowLeft = Math.min(nowLeft, leftMax);
+          nowLeft = Math.max(nowLeft, -leftMax);
+          nowTop = Math.min(nowTop, topMax);
+          nowTop = Math.max(nowTop, -topMax);
+
+          //改变li的left和top值
+          parent.style.left = nowLeft + 'px';
+          parent.style.top = nowTop + 'px';
+
+          //移动时li层级就加一
+          parent.style.zIndex = ++index;
+
+        }
+        /*鼠标抬起*/
+        document.onmouseup = function () {
+          this.onmousemove = null;
+          this.onmouseup = null;
+          //缓冲
+          timer = setInterval(function () {
+            //差值逐渐减缓
+            _x *= 0.9;
+            _y *= 0.9;
+            //重新获取现在的li的left和top值
+            var nowLeft = parent.offsetLeft + _x;
+            var nowTop = parent.offsetTop + _y;
+            //如果拖到了边缘就反弹缓冲
+            if (nowLeft > leftMax || nowLeft < -leftMax) {
+              _x = -_x;
+            }
+            if (nowTop > topMax || nowTop < -topMax) {
+              _y = -_y;
+            }
+
+            //改变li的left和top值
+            parent.style.left = nowLeft + "px";
+            parent.style.top = nowTop + "px";
+            //终止缓冲判断
+            if (Math.abs(_x) < 0.5 && Math.abs(_y) < 0.5) {
+              clearInterval(timer);
+            }
+          }, 20)
+        }
+      }
+    }, false)
+
+    //清除默认行为的兼容函数
+    function cancelHandle(e) {
+      if (e.preventDefault) {
+        e.preventDefault();
+      } else {
+        e.returnValue = false;
+      }
+    }
+    //获取屏幕宽高的兼容函数
+    function getViewOffset() {
+      if (window.innerWidth) {
+        return {
+          w: window.innerWidth,
+          h: window.innerHeight
+        }
+      } else {
+        if (document.compatMode == "CSS1Compat") {
+          return {
+            w: document.documentElement.clientWidth,
+            h: document.document.clientHeight
+          }
+        } else {
+          return {
+            w: document.body.clientWidth,
+            h: document.body.clientHeight
+          }
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

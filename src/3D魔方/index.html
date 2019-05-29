@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Keywords" content="3D">
+  <meta name="Description" content="">
+  <title>3D</title>
+  <style>
+	*{
+		margin:0;
+		padding:0;
+	}
+	body{
+		perspective:3000px;
+		background-color:#000;
+	}
+	.stage{
+		position:relative;
+		width:400px;
+		height:400px;
+		margin:300px auto;
+		transform-style:preserve-3d;
+		transition:5s;
+	}
+	.stage:hover{
+		transform:rotateX(360deg) rotateY(360deg);
+	}
+	.stage .face{
+		position:absolute;
+		left:0;
+		top:0;
+		width:400px;
+		height:400px;
+		background-image:repeating-linear-gradient(rgba(255,0,0,.3) 0,rgba(255,0,0,.3) 3px,transparent 3px,transparent 50px),repeating-linear-gradient(90deg,rgba(255,0,0,.3) 0,rgba(255,0,0,.3) 3px,transparent 3px,transparent 50px);
+		transition:3s;
+	}
+	.stage .front{
+		transform:translateZ(200px);
+	}
+	.stage .behind{
+		transform:rotateY(180deg) translateZ(200px);
+	}
+	.stage .left{
+		transform:rotateY(90deg) translateZ(200px);
+	}
+	.stage .right{
+		transform:rotateY(-90deg) translateZ(200px);
+	}
+	.stage .top{
+		transform:rotateX(90deg) translateZ(200px);
+	}
+	.stage .bottom{
+		transform:rotateX(-90deg) translateZ(200px);
+	}
+	.stage:hover .front{
+		box-shadow:0 0 30px 10px blue;
+		/* background-color:#ffff00; */
+	}
+	.stage:hover .behind{
+		box-shadow:0 0 30px 10px blue;
+		/* background-color:#ffccff; */
+	}
+	.stage:hover .left{
+		box-shadow:0 0 30px 10px blue;
+		/* background-color:#6600ff; */
+	}
+	.stage:hover .right{
+		box-shadow:0 0 30px 10px blue;
+		/* background-color:#66ccff; */
+	}
+	.stage:hover .top{
+		box-shadow:0 0 30px 10px blue;
+		/* background-color:#00ff00; */
+	}
+	.stage:hover .bottom{
+		box-shadow:0 0 30px 10px blue;
+		/* background-color:#3399ff; */
+	}
+	.stage p{
+		line-height:400px;
+		text-align:center;
+		font-size:70px;
+		font-weight:bold;
+		text-shadow:2px 2px 20px #f60,2px 2px 10px #f60;
+		color:#f60;
+	}
+  </style>
+ </head>
+ <body>
+	<div class = 'stage'>
+		<div class = 'face front'></div>
+		<div class = 'face behind'></div>
+		<div class = 'face left'></div>
+		<div class = 'face right'></div>
+		<div class = 'face top'></div>
+		<div class = 'face bottom'></div>
+		<p>做人真难!!</p>
+	</div>
+ </body>
+</html>
